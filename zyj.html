@@ -4,6 +4,10 @@
     <title>AC(Any Create)自动机</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://are-hfl3.github.io/710.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://are-hfl3.github.io/710.png">
+    <link rel="icon" type="image/png" sizes="any" href="https://are-hfl3.github.io/710.png">
+    <link rel="shortcut icon" href="https://are-hfl3.github.io/710.png">
     <style>
         * {
             margin: 0;
@@ -17,7 +21,7 @@
         }
 
         body {
-            background: url(https://www.topscoding.com/fs/0dab8f0ec596f1a6596090714c9523211a6d979a) no-repeat center center;
+            background: url(https://are-hfl3.github.io/autumn_trip_2025.jpg) no-repeat center center;
             background-size: cover;
             background-attachment: fixed;
             max-width: 800px;
@@ -224,17 +228,50 @@
         .sub-btn {
             background: #9c88ff;
         }
+        
+        /* 背景图选择样式 */
+        .bg-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .bg-item {
+            width: 80px;
+            height: 60px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            background-size: cover;
+            background-position: center;
+        }
+        .bg-item:hover {
+            transform: scale(1.05);
+        }
+        .bg-item.active {
+            border-color: #409eff;
+        }
     </style>
 </head>
 <body>
 
     <h1>AC(Any Create)自动机</h1>
 
+    <!-- 背景图选择 -->
+    <div class="card">
+        <p>背景图选择：</p>
+        <div class="bg-preview" id="bgPreview">
+            <div class="bg-item active" style="background-image: url('https://are-hfl3.github.io/autumn_trip_2025.jpg')" data-bg="https://are-hfl3.github.io/autumn_trip_2025.jpg"></div>
+            <div class="bg-item" style="background-image: url('https://are-hfl3.github.io/shiban_xiongduojishao.png')" data-bg="https://are-hfl3.github.io/shiban_xiongduojishao.png"></div>
+        </div>
+    </div>
+
     <!-- 数量控制 -->
     <div class="card count-box">
-        <button onclick="changeCount(-1)">-</button>
-        <span id="countNum">5</span> 条
-        <button onclick="changeCount(1)">+</button>
+        <label for="countInput">生成数量：</label>
+        <input type="number" id="countInput" min="1" max="100" value="5" style="width: 80px; padding: 8px; font-size: 16px; text-align: center; border: 1px solid #e1e5e9; border-radius: 8px;">
+        <span>条</span>
     </div>
 
     <!-- 打开筛选面板按钮 -->
@@ -253,7 +290,7 @@
             <option value="@E考@S拉爆@E">考试拉爆</option>
             <option value="@B与@G官宣在一起啦">官宣相恋</option>
             <option value="@B、@G两人喜结良缘">喜结良缘</option>
-            <option value="@B和@G约会偶遇@B">多人趣味</option>
+            <option value="@B和@G约会偶遇@E">多人趣味</option>
             <option value="@B当众向@G表达心意">当众表白</option>
             <option value="@T在@S课上点名批评@E">点名批评--杜鹃</option>
         </select>
@@ -341,7 +378,7 @@
             "@E考@S拉爆@E",
             "@B与@G官宣在一起啦",
             "@B、@G两人喜结良缘",
-            "@B和@G约会偶遇@B",
+            "@B和@G约会偶遇@E",
             "@B当众向@G表达心意",
             "@T在@S课上点名批评@E",
         ];
@@ -374,6 +411,9 @@
             renderCheck('girls');
             renderCheck('subjs');
             renderCheck('teachers');
+            
+            // 初始化背景图选择
+            initBgSelection();
         };
 
         // 全选反选
@@ -394,11 +434,9 @@
             return res.length ? res : list;
         }
 
-        // 数量调整
-        function changeCount(num) {
-            count += num;
-            if (count < 1) count = 1;
-            document.getElementById("countNum").innerText = count;
+        // 获取数量值
+        function getCount() {
+            return parseInt(document.getElementById("countInput").value) || 1;
         }
 
         function fillTemplate(){
@@ -429,11 +467,29 @@
         function zaoyao() {
             let result = "";
             let userFormat = document.getElementById("formatInput").value || "@B like @G";
-            for(let i=1;i<=count;i++){
+            let currentCount = getCount();
+            for(let i=1;i<=currentCount;i++){
                 let oneLine = replaceAllName(userFormat);
                 result += oneLine + "<br>";
             }
             document.getElementById('zaoyao').innerHTML = result;
+        }
+        
+        // 背景图选择功能
+        function initBgSelection() {
+            const bgItems = document.querySelectorAll('.bg-item');
+            bgItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 移除所有active类
+                    bgItems.forEach(i => i.classList.remove('active'));
+                    // 给当前选中项添加active类
+                    this.classList.add('active');
+                    // 获取背景图URL
+                    const bgUrl = this.getAttribute('data-bg');
+                    // 设置body背景
+                    document.body.style.backgroundImage = `url(${bgUrl})`;
+                });
+            });
         }
     </script>
 </body>
